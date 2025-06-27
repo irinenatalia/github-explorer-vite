@@ -1,4 +1,4 @@
-import React, { useState, KeyboardEvent } from 'react';
+import React, { useState, type KeyboardEvent } from 'react';
 import Repository from './Repository';
 
 interface User {
@@ -12,6 +12,7 @@ const Users: React.FC = () => {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [expandedUserById, setExpandedUserById] = useState(-1);
+  const [showEmptyMessage, setShowEmptyMessage] = useState(false);
   const token = import.meta.env.VITE_GITHUB_TOKEN;
 
   const searchUsers = async () => {
@@ -34,6 +35,7 @@ const Users: React.FC = () => {
         throw new Error('Failed to fetch users');
       }
       const data = await response.json();
+      data.items.length > 0? setShowEmptyMessage(false) : setShowEmptyMessage(true);
       setUsers(data.items || []);
     } catch (err: any) {
       setError(err.message || 'Unknown error');
@@ -70,11 +72,9 @@ const Users: React.FC = () => {
         className="w-full text-white px-3.5 py-2.5 text-sm font-semibold hover:bg-[#0e7cb9] disabled:opacity-50 bg-[#2c9ddb] cursor-pointer"
       >
         {loading ? (
-          <div
-  className="inline-block h-8 w-8 animate-spin rounded-full border-4 border-solid border-current border-e-transparent align-[-0.125em] text-surface motion-reduce:animate-[spin_1.5s_linear_infinite] dark:text-white"
-  role="status">
-    <span className="!absolute !-m-px !h-px !w-px !overflow-hidden !whitespace-nowrap !border-0 !p-0 ![clip:rect(0,0,0,0)]">Searching</span>
-    </div>
+          <div className="inline-block h-8 w-8 animate-spin rounded-full border-4 border-solid border-current border-e-transparent align-[-0.125em] text-surface motion-reduce:animate-[spin_1.5s_linear_infinite] dark:text-white" role="status">
+            <span className="!absolute !-m-px !h-px !w-px !overflow-hidden !whitespace-nowrap !border-0 !p-0 ![clip:rect(0,0,0,0)]">Searching</span>
+          </div>
           ) : 'Search'}
       </button>
       {error && <p className="text-red-600 mt-2">{error}</p>}
@@ -110,7 +110,7 @@ const Users: React.FC = () => {
           </div>
         </div>
       )}
-      {users.length == 0 && (
+      {showEmptyMessage && query.length > 0 && users.length == 0 && (
         <div className="mt-4">
           <p className="mb-2 font-semibold">User not found.</p>
         </div>
