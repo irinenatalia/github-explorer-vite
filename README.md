@@ -10,3 +10,7 @@ This is the guide to setup Github Explorer app environment, built in React + Typ
     ```
 - Run ``npm run dev`` and copy the URL into browser
 - Happy exploring
+
+
+## Demo Link
+[https://github-explorer-irine.vercel.app/](https://github-explorer-irine.vercel.app/)
